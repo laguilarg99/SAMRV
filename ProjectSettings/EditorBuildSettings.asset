@@ -4,7 +4,16 @@
 EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
-  m_Scenes: []
+  m_Scenes:
+  - enabled: 0
+    path: Assets/Scenes/Opcion1.unity
+    guid: 9fc0d4010bbf28b4594072e72b8655ab
+  - enabled: 0
+    path: Assets/Scenes/Opcion2.unity
+    guid: a2bbdbb0d579de341a980bdba17613a7
+  - enabled: 1
+    path: Assets/Scenes/VOR.unity
+    guid: f86451af562e0ab44b1c3b0ebf25616b
   m_configObjects:
     com.unity.xr.management.loader_settings: {fileID: 11400000, guid: f4d6e86a9047ab642ad6d7c8085d9b70,
       type: 2}

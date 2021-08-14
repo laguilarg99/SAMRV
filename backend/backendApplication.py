@@ -10,10 +10,11 @@ result = ''
 
 @app.route("/hola", methods=['POST'])
 def hola():
-    response = request.get_json()
-    result = response['value']
-    processdata.createFile(result)
-    return 'OK', 200, response
+    return "hola"
+    # response = request.get_json()
+    # result = response['value']
+    # processdata.createFile(result)
+    # return 'OK', 200, response
 
 @app.route("/adios", methods=['POST'])
 def adios():

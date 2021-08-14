@@ -3,10 +3,61 @@
   <head>
     <meta charset="utf-8">
     <link rel="stylesheet" href="./style/point.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEAg3QhqLMpG8r+8fhAXLRk2vvoC2f3B09zVXn8CA5QIVfZOJ3BCsw2P0p/We" crossorigin="anonymous">
   </head>
   <body>
-      <!--<canvas id="myCanvas" ></canvas> -->
-      <script src="./scripts/point.js"></script> 
-      <button onClick="doWork()">Click Me</button>
+    <div id= "manual"class="row row-cols-1 row-cols-md-3 g-3 divExplanationIn mx-5 shadow p-3 mb-5 bg-white rounded">
+      <div class="col">
+        <div class="card">
+          <img src="..." class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <img src="..." class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col">
+        <div class="card">
+          <img src="..." class="card-img-top" alt="...">
+          <div class="card-body">
+            <h5 class="card-title">Card title</h5>
+            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer</p>
+          </div>
+        </div>
+        <button type="button" class="btn btn-success mt-5 w-100" onclick="initSetup()">Start</button>
+      </div>
+    </div>
+
+    <form id = "data_error" class="row g-3 divDataIn w-25 shadow p-3 mb-5 mx-5 bg-white rounded d-none">
+      <div class="col-auto">
+        <label for="staticEmail2" class="visually-hidden">Label</label>
+        <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="Error  {Max. 100 Min. 0}:">
+      </div>
+      <div class="col-auto">
+        <label for="inputPassword2" class="visually-hidden">Error</label>
+        <input type="number" class="form-control" id="inputPassword2" name = "error_data_value" placeholder="p.e: 20">
+      </div>
+      <div class="col-auto">
+        <button type="button" class="btn btn-success" onclick="initGame_Setup()">Send</button>
+      </div>
+    </form>
+
+    <nav id="gameBar" class="navbar navbar-custom position-absolute h-25 w-100 border-bottom d-none">
+      <span class="navbar-brand mb-0 h1">Navbar</span>
+    </nav>
+
+    <canvas id="myCanvas" ></canvas>
+
+    <script src="./scripts/point.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
   </body>
 </html>

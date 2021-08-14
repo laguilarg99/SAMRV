@@ -6,4 +6,61 @@ body, html { height: 100%; }
     position:absolute;
     width: 100%;
     height: 100%;
+    display: none;
+}
+
+.navbar-custom {
+  background-color: white;
+}
+
+
+.divExplanationIn {
+    position: relative;
+    animation: mymoveIn;
+    animation-duration: 3s;
+    animation-fill-mode: forwards;
+}
+  
+.divExplanationOut {
+  position: relative;
+  animation: mymoveOut;
+  animation-duration: 5s;
+  animation-fill-mode: forwards;
+}
+
+@keyframes mymoveIn {
+    0% {top: -10%;}
+    100% {top: 40%;}
+}
+
+
+@keyframes mymoveOut {
+  0% {top: 40%;}
+  100% {top: -100%;}
+}
+
+
+.divDataIn {
+  position: relative;
+  animation: mymoveInData;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+.divDataOut {
+  position: relative;
+  animation: mymoveOutData;
+  animation-duration: 2s;
+  animation-fill-mode: forwards;
+}
+
+
+@keyframes mymoveInData {
+  0% {top: -30%;}
+  100% {top: 5%;}
+}
+
+@keyframes mymoveOutData {
+  0% {top: 5%;}
+  100% {top: -50%;}
 }

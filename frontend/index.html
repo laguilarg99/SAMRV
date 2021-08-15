@@ -8,29 +8,35 @@
   <body>
     <div id= "manual"class="row row-cols-1 row-cols-md-3 g-3 divExplanationIn mx-5 shadow p-3 mb-5 bg-white rounded">
       <div class="col">
-        <div class="card">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card h-100">
+          <div class="h-100">
+            <img src="./Images/setError.PNG" class="card-img-top mt-4 w-100 h-65" alt="Error_Induce_Frame">
+          </div>
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            <h5 class="card-title">Step 1</h5>
+            <p class="card-text">Set the percentege of tries in which you want to be induce to error</p>
           </div>
         </div>
       </div>
       <div class="col">
-        <div class="card">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card h-100">
+          <div class="h-100">
+            <img src="./Images/followPoint.png" class="card-img-top w-100 h-90" alt="Point_movement">
+          </div>
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
+            <h5 class="card-title">Step 2</h5>
+            <p class="card-text">Try to follow the point as fast as you can!</p>
           </div>
         </div>
       </div>
       <div class="col">
-        <div class="card">
-          <img src="..." class="card-img-top" alt="...">
+        <div class="card h-100">
+          <div class="h-100">
+            <img src="./Images/wait.PNG" class="card-img-top w-100 h-100" alt="Final_result">
+          </div>
           <div class="card-body">
-            <h5 class="card-title">Card title</h5>
-            <p class="card-text">This is a longer card with supporting text below as a natural lead-in to additional content. This content is a little bit longer</p>
+            <h5 class="card-title">Step 3</h5>
+            <p class="card-text">Press f to finish the game and see the final result</p>
           </div>
         </div>
         <button type="button" class="btn btn-success mt-5 w-100" onclick="initSetup()">Start</button>
@@ -39,25 +45,41 @@
 
     <form id = "data_error" class="row g-3 divDataIn w-25 shadow p-3 mb-5 mx-5 bg-white rounded d-none">
       <div class="col-auto">
-        <label for="staticEmail2" class="visually-hidden">Label</label>
-        <input type="text" readonly class="form-control-plaintext" id="staticEmail2" value="Error  {Max. 100 Min. 0}:">
+        <label for="label" class="visually-hidden">Label</label>
+        <input type="text" readonly class="form-control-plaintext" id="Label" value="Error  {Max. 100 Min. 0}:">
       </div>
-      <div class="col-auto">
-        <label for="inputPassword2" class="visually-hidden">Error</label>
-        <input type="number" class="form-control" id="inputPassword2" name = "error_data_value" placeholder="p.e: 20">
+      <div class="col-auto w-75">
+        <label for="inputData" class="visually-hidden">Error</label>
+        <input type="number" class="form-control" id="inputData2" name = "error_data_value" placeholder="p.e: 20">
       </div>
       <div class="col-auto">
         <button type="button" class="btn btn-success" onclick="initGame_Setup()">Send</button>
       </div>
     </form>
 
-    <nav id="gameBar" class="navbar navbar-custom position-absolute h-25 w-100 border-bottom d-none">
-      <span class="navbar-brand mb-0 h1">Navbar</span>
+    <nav id="gameBar" class="opacityOn navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded d-none">
+      <div id="sparkline4" class="text-center">
+        <canvas class="sparline-custom w-25 mx-5"></canvas>
+      </div>
+      <div class="mx-5">
+        <h1 id ="velocity" class="velocity-style"></h1>
+      </div>
     </nav>
 
-    <canvas id="myCanvas" ></canvas>
+    <canvas class= "opacityOn" id="myCanvas">
+    </canvas>
+    
+    <div id="loading" class="opacityOn d-none">
+      <div  class="lds-facebook">
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
 
     <script src="./scripts/point.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js"></script>
   </body>
 </html>

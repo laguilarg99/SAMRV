@@ -34,7 +34,10 @@ var myRect = {
     h: 15
 }
 
-var opacity = 0;
+//Current mouse velocity
+var velocity = 0;
+
+
 
 function fix_dpi() {
 
@@ -87,10 +90,17 @@ function draw() {
 
   //Draw
   ctx.fillRect(myRect.x, myRect.y, myRect.w, myRect.h);
-  
+
+  //Draw exit information
+  var text = "Press f to exit...";
+  ctx.font = "20px Arial";
+  ctx.fillText(text, bodyWidth-200, bodyHeight-30);
+
+    
 }
 
 function probability(n){
+
     if(n < 0 || n > 100)
     {
         n = 50; //Standard probability to induce error.
@@ -100,22 +110,39 @@ function probability(n){
 }
 
 function initGame(error){
+    makeGraph();
+  
+    //Add the listener to end the game and sent data to backend
+    document.addEventListener('keydown', function(event) {
+        if(event.code == "KeyF"){
+            document.getElementById('myCanvas').className = "opacityOut";
+            document.getElementById('gameBar').className = "opacityOut navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded";  
+            setTimeout(function(){
+                document.getElementById('myCanvas').remove()
+                document.getElementById('gameBar').remove()
+                document.getElementById('loading').className="opacityOn";
+            }, 3000)
+           
+        }
+    });
+
     //Add the listener to make the point move when the pointer is over it
-    canvas.addEventListener('mousemove', e => {
+    canvas.addEventListener('mousemove', e => {     
+        if(probability(error) && counter == 1 && velocity > 1200){
+            moveError(ndir);
+            counter = 2;
+        } 
         if ((e.clientX>=myRect.x)&(e.clientX<=myRect.x+myRect.w)&(e.clientY>=myRect.y)&(e.clientY<=myRect.y+myRect.h)){
             
             if(counter == 0){
                 move();
                 counter = 1;
-            }else{
-                if(probability(error) && counter == 1){
-                    moveError(ndir);
-                    counter = 2;
-                }else if(counter == 2){
-                    myRect.x = origin.x;
-                    myRect.y = origin.y;
-                    counter = 0;
-                }
+            }else if(counter == 1){
+                counter = 2;
+            }else if(counter == 2){
+                myRect.x = origin.x;
+                myRect.y = origin.y;
+                counter = 0;
             }
         }
         requestAnimationFrame(draw);
@@ -124,26 +151,66 @@ function initGame(error){
     requestAnimationFrame(draw);
 }
 
+function makeGraph() {
+    var e, l = -1, r = -1, t = 0, a = [];
+    $("html").mousemove(function(i) {
+        var o = i.pageX
+          , e = i.pageY;
+        -1 < l && (t += Math.max(Math.abs(o - l), Math.abs(e - r))),
+        l = o,
+        r = e
+    });
+    var h = function() {
+        var i = (new Date).getTime();
+        if (e && e != i) {
+            var o = Math.round(t / (i - e) * 1e3);
+            document.getElementById("velocity").innerHTML = o + "px/s";
+            velocity = o;
+            a.push(o),
+            30 < a.length && a.splice(0, 1),
+            t = 0,
+            $("#sparkline4").sparkline(a, {
+                type: "line",
+                width: "100%",
+                height: "150",
+                chartRangeMax: 77,
+                maxSpotColor: !1,
+                minSpotColor: !1,
+                spotColor: !1,
+                lineWidth: 1,
+                lineColor: "#3051d3",
+                fillColor: "rgba(48, 81, 211, 0.3)",
+                highlightLineColor: "rgba(24,147,126,.1)",
+                highlightSpotColor: "rgba(24,147,126,.2)"
+            })
+        }
+        e = i,
+        setTimeout(h, 300)
+    };
+    setTimeout(h, 300)
+}
 
 function initSetup(){
    document.getElementById("manual").className = "row row-cols-1 row-cols-md-3 g-3 divExplanationOut mx-5 shadow p-3 mb-5 bg-white rounded";
    setTimeout(function(){
         document.getElementById('manual').remove();
         document.getElementById('data_error').className = "row g-3 divDataIn w-25 shadow p-3 mb-5 mx-5 bg-white rounded"; 
-  }, 3000)
+  }, 2000)
 
 }
 
 function initGame_Setup(){
     var inputs = document.getElementById("data_error").elements;
     var error = inputs["error_data_value"].value;
+    if(!error)
+        error = 50;
     document.getElementById("data_error").className = "row g-3 divDataOut w-25 shadow p-3 mb-5 mx-5 bg-white rounded";
     setTimeout(function(){
          document.getElementById('data_error').remove(); 
          document.getElementById('myCanvas').style.display = 'block';
-         document.getElementById('gameBar').className = "navbar navbar-custom position-absolute border-bottom h-25 w-100";
          initGame(error);
-   }, 3000)
+         document.getElementById('gameBar').className = "opacityOn navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded";  
+   }, 2000)
  
  }
 

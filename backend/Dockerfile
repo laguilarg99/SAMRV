@@ -12,6 +12,6 @@ RUN pip3 install -r requirements.txt
 COPY . .
 
 ENV FLASK_APP backendApplication.py
-ENV FLASK_ENV dev
+ENV FLASK_ENV prod
 
 CMD [ "python3", "-m" , "flask", "run", "--host=0.0.0.0"]

@@ -1,5 +1,6 @@
 from flask import Flask, request
 from flask_cors import CORS
+import json
 import processdata
 
 
@@ -8,14 +9,13 @@ CORS(app)
 
 result = ''
 
-@app.route("/hola", methods=['POST'])
-def hola():
-    return "hola"
-    # response = request.get_json()
+@app.route("/processdata", methods=['POST'])
+def processdata_to_front():
+    data = request.json
+    avg, html = processdata.process_data_json(data)
+    html = html + "<h1 id=\"velocity_avg_value\" class=\"d-none\">"+ str(avg) + "</h1>"
+    return html
+    # response = request.get_json()   
     # result = response['value']
     # processdata.createFile(result)
     # return 'OK', 200, response
-
-@app.route("/adios", methods=['POST'])
-def adios():
-    return "adios"

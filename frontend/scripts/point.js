@@ -37,6 +37,18 @@ var myRect = {
 //Current mouse velocity
 var velocity = 0;
 
+//variable to save all the velocity values
+var velocity_arr = [];
+
+//variable to save the time taken to end a try
+var time = [];
+
+//variable to save the begining of a try
+var start = 0;
+
+//variable to save the end of a try
+var end = 0;
+
 
 
 function fix_dpi() {
@@ -115,14 +127,33 @@ function initGame(error){
     //Add the listener to end the game and sent data to backend
     document.addEventListener('keydown', function(event) {
         if(event.code == "KeyF"){
+            velocity_arr.push(time);
+            var data_end = JSON.stringify(velocity_arr);
+            
             document.getElementById('myCanvas').className = "opacityOut";
             document.getElementById('gameBar').className = "opacityOut navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded";  
             setTimeout(function(){
                 document.getElementById('myCanvas').remove()
                 document.getElementById('gameBar').remove()
-                document.getElementById('loading').className="opacityOn";
-            }, 3000)
-           
+            }, 2500)
+            
+            sentData(data_end, function(handledata){
+                setTimeout(function(){
+                    document.getElementById('showdataimg').innerHTML = handledata;
+                    var velocity_avg_final_value = parseInt(document.getElementById('velocity_avg_value').innerHTML);
+                    if(velocity_avg_final_value < 400){
+                        document.getElementById('avg_velocity').className = "alert alert-danger text-center mx-5 mt-5";
+                    }else if(velocity_avg_final_value >= 400 && velocity_avg_final_value < 1000){
+                        document.getElementById('avg_velocity').className = "alert alert-warning text-center mx-5 mt-5";
+                    }else if(velocity_avg_final_value >= 1000){
+                        document.getElementById('avg_velocity').className = "alert alert-success text-center mx-5 mt-5";
+                    }
+
+                    document.getElementById('avg_velocity').innerHTML = document.getElementById('velocity_avg_value').innerHTML;
+                    document.getElementById('showdata').className = "row row-cols-1 row-cols-md-2 g-2 divEndDataIn mx-5 shadow p-3 mb-5 bg-white rounded";
+                }, 3000)
+            });
+            
         }
     });
 
@@ -136,10 +167,14 @@ function initGame(error){
             
             if(counter == 0){
                 move();
+                start = (new Date()).getTime();
                 counter = 1;
             }else if(counter == 1){
                 counter = 2;
             }else if(counter == 2){
+                end = (new Date().getTime());
+                var total_time = end -start;
+                time.push(total_time);
                 myRect.x = origin.x;
                 myRect.y = origin.y;
                 counter = 0;
@@ -166,6 +201,7 @@ function makeGraph() {
             var o = Math.round(t / (i - e) * 1e3);
             document.getElementById("velocity").innerHTML = o + "px/s";
             velocity = o;
+            velocity_arr.push(o);
             a.push(o),
             30 < a.length && a.splice(0, 1),
             t = 0,
@@ -214,11 +250,23 @@ function initGame_Setup(){
  
  }
 
-function doWork(){
-    var xhr = new XMLHttpRequest();
-    xhr.open("POST", "http://127.0.0.1:5000/hola", true);
-    xhr.setRequestHeader('Content-Type', 'application/json');
-    xhr.send(JSON.stringify({
-        "value": "value"
-    }));
+
+function sentData(data, handledata){
+    var url = "http://127.0.0.1:5000/processdata";
+    var PostRequest = $.ajax({
+        url: url,
+        type: "POST",
+        contentType: 'application/json',
+        data: data,
+        success: function(response){
+            handledata(response);
+        }
+    });
+
+    // var xhr = new XMLHttpRequest();
+    // xhr.open("POST", "http://127.0.0.1:5000/hola", true);
+    // xhr.setRequestHeader('Content-Type', 'application/json');
+    // xhr.send(JSON.stringify({
+    //     "value": "value"
+    // }));
 }

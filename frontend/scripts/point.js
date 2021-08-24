@@ -49,8 +49,34 @@ var start = 0;
 //variable to save the end of a try
 var end = 0;
 
+//variable to save the actual position the pointer
+var mouse_pos = [];
 
+//variable to save the actual position of the target
+var pixel_pos = [];
+pixel_pos.push([origin.x, origin.y]);
 
+//variable to know if It is necessary or not to draw the point
+var is_over_velocity = false;
+
+//Variable to control how many times the move error function is called
+var counter_moveError = 0;
+
+//Variable to control how many times the point dissapear
+var counter_dissapear = 0;
+
+//Frequency to calculate the velocity 10ms
+var time_out = 10;
+
+function diff (num1, num2) {
+    if (num1 > num2) {
+      return (num1 - num2);
+    } else {
+      return (num2 - num1);
+    }
+  };
+
+  
 function fix_dpi() {
 
     //create a style object that returns width and height
@@ -82,13 +108,8 @@ function move(){
 
 //Error induced
 function moveError(dir){
-    var n = Math.floor(Math.random()*2);
-    var direct1 = directions[dir];
-    var direct2 = directions[(dir + 4)%directions.length];
-    var options = [direct1, direct2];
-    var theta = options[n];
-    var x = Math.sin(theta) * ((bodyHeight/2)*0.10);
-    var y = Math.cos(theta) * ((bodyHeight/2)*0.10);
+    var x = Math.sin(directions[dir]) * ((bodyHeight/2)*0.10);
+    var y = Math.cos(directions[dir]) * ((bodyHeight/2)*0.10);
     myRect.x = myRect.x + x;
     myRect.y = myRect.y + y;
 }
@@ -111,6 +132,20 @@ function draw() {
     
 }
 
+
+function draw_empty() {
+
+    //call the dpi fix every time 
+    //canvas is redrawn
+    fix_dpi();
+    
+    //Draw exit information
+    var text = "Press f to exit...";
+    ctx.font = "20px Arial";
+    ctx.fillText(text, bodyWidth-200, bodyHeight-30);
+      
+}
+
 function probability(n){
 
     if(n < 0 || n > 100)
@@ -123,54 +158,80 @@ function probability(n){
 
 function initGame(error){
     makeGraph();
-  
+    
     //Add the listener to end the game and sent data to backend
     document.addEventListener('keydown', function(event) {
         if(event.code == "KeyF"){
             velocity_arr.push(time);
+            velocity_arr.push(pixel_pos);
+            velocity_arr.push(mouse_pos);
             var data_end = JSON.stringify(velocity_arr);
             
+            sentData(data_end);
+
             document.getElementById('myCanvas').className = "opacityOut";
             document.getElementById('gameBar').className = "opacityOut navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded";  
+            
             setTimeout(function(){
                 document.getElementById('myCanvas').remove()
                 document.getElementById('gameBar').remove()
+                window.alert("Succesfully finished!")
+                location.reload();
             }, 2500)
-            
-            sentData(data_end, function(handledata){
-                setTimeout(function(){
-                    document.getElementById('showdataimg').innerHTML = handledata;
-                    var velocity_avg_final_value = parseInt(document.getElementById('velocity_avg_value').innerHTML);
-                    if(velocity_avg_final_value < 400){
-                        document.getElementById('avg_velocity').className = "alert alert-danger text-center mx-5 mt-5";
-                    }else if(velocity_avg_final_value >= 400 && velocity_avg_final_value < 1000){
-                        document.getElementById('avg_velocity').className = "alert alert-warning text-center mx-5 mt-5";
-                    }else if(velocity_avg_final_value >= 1000){
-                        document.getElementById('avg_velocity').className = "alert alert-success text-center mx-5 mt-5";
-                    }
-
-                    document.getElementById('avg_velocity').innerHTML = document.getElementById('velocity_avg_value').innerHTML;
-                    document.getElementById('showdata').className = "row row-cols-1 row-cols-md-2 g-2 divEndDataIn mx-5 shadow p-3 mb-5 bg-white rounded";
-                }, 3000)
-            });
+          
             
         }
     });
 
+    
     //Add the listener to make the point move when the pointer is over it
-    canvas.addEventListener('mousemove', e => {     
-        if(probability(error) && counter == 1 && velocity > 1200){
-            moveError(ndir);
-            counter = 2;
-        } 
+    canvas.addEventListener('mousemove', e => {    
+        
+        mouse_pos.push([e.clientX, e.clientY]);
+
+  
+        if(pixel_pos[pixel_pos.length - 1][0] != myRect.x || pixel_pos[pixel_pos.length - 1][1] != myRect.y)
+            pixel_pos.push([myRect.x, myRect.y]);
+
+        if(counter == 1){
+            var distance_origin = function(){
+                var deltaX = diff(e.clientX, origin.x);
+                var deltaY = diff(e.clientY, origin.y);
+                let dist = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+                return dist;
+            }
+
+            var dist = distance_origin();
+
+            if(dist >= ((bodyHeight/2)*0.10) && counter_dissapear == 0){
+                is_over_velocity = true;
+                if(probability(error) && counter_moveError == 0){
+                    moveError(ndir);
+                    counter_moveError = 1;
+                }
+                counter_dissapear = 1;
+            }
+
+            if(is_over_velocity){
+                setTimeout(function(){
+                    is_over_velocity = false;
+                },300);
+                setTimeout(function(){
+                    document.getElementById('body').style.cursor = 'default';
+                },450);
+            }
+        }
+
         if ((e.clientX>=myRect.x)&(e.clientX<=myRect.x+myRect.w)&(e.clientY>=myRect.y)&(e.clientY<=myRect.y+myRect.h)){
-            
             if(counter == 0){
                 move();
                 start = (new Date()).getTime();
                 counter = 1;
             }else if(counter == 1){
                 counter = 2;
+                counter_moveError = 0;
+                counter_dissapear = 0;
             }else if(counter == 2){
                 end = (new Date().getTime());
                 var total_time = end -start;
@@ -180,10 +241,19 @@ function initGame(error){
                 counter = 0;
             }
         }
-        requestAnimationFrame(draw);
+        if(!is_over_velocity)
+            requestAnimationFrame(draw);
+        if(is_over_velocity){
+            requestAnimationFrame(draw_empty);
+            document.getElementById('body').style.cursor = 'none';
+        }
     })
-
-    requestAnimationFrame(draw);
+    if(!is_over_velocity)
+        requestAnimationFrame(draw);
+    if(is_over_velocity){
+        requestAnimationFrame(draw_empty);
+        document.getElementById('body').style.cursor = 'none';
+    }
 }
 
 function makeGraph() {
@@ -200,8 +270,9 @@ function makeGraph() {
         if (e && e != i) {
             var o = Math.round(t / (i - e) * 1e3);
             document.getElementById("velocity").innerHTML = o + "px/s";
-            velocity = o;
-            velocity_arr.push(o);
+            if(o != 0)
+                velocity = o;
+            velocity_arr.push(velocity);
             a.push(o),
             30 < a.length && a.splice(0, 1),
             t = 0,
@@ -221,9 +292,9 @@ function makeGraph() {
             })
         }
         e = i,
-        setTimeout(h, 300)
+        setTimeout(h, time_out);
     };
-    setTimeout(h, 300)
+    setTimeout(h, time_out);
 }
 
 function initSetup(){
@@ -251,22 +322,12 @@ function initGame_Setup(){
  }
 
 
-function sentData(data, handledata){
-    var url = "http://127.0.0.1:5000/processdata";
+function sentData(data){
+    var url = "http://ec2-18-215-129-32.compute-1.amazonaws.com:5000/processdata";
     var PostRequest = $.ajax({
         url: url,
         type: "POST",
         contentType: 'application/json',
-        data: data,
-        success: function(response){
-            handledata(response);
-        }
+        data: data
     });
-
-    // var xhr = new XMLHttpRequest();
-    // xhr.open("POST", "http://127.0.0.1:5000/hola", true);
-    // xhr.setRequestHeader('Content-Type', 'application/json');
-    // xhr.send(JSON.stringify({
-    //     "value": "value"
-    // }));
 }

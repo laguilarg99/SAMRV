@@ -1,6 +1,6 @@
 #to run this container:
-#docker build . -t processdata
-#docker run -p 5000:5000 processdata
+#docker build . -t <name of the container>
+#docker run -p 5000:5000 <name of the container>
 
 FROM python:3.8-slim-buster
 

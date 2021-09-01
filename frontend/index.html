@@ -57,7 +57,7 @@
       </div>
     </form>
 
-    <nav id="gameBar" class="opacityOn navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded d-none">
+    <nav id="gameBar" class="opacityOn navbar navbar-custom position-absolute h-20 w-100 d-none">
       <div id="sparkline4" class="text-center">
         <canvas class="sparline-custom w-25 mx-5"></canvas>
       </div>
@@ -69,37 +69,6 @@
     <canvas class= "opacityOn" id="myCanvas">
     </canvas>
 
-    <div id= "showdata"class="row row-cols-1 row-cols-md-2 g-2 mx-5 shadow p-3 mb-5 bg-white rounded d-none">
-      <div class="col">
-        <div class="card h-100">
-          <div class="h-100">
-            <div id = "showdataimg" alt="Plot"></div>
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">Time Grahp</h5>
-            <p class="card-text">This grahp shows how fast you have done each try</p>
-          </div>
-        </div>
-      </div>
-      <div class="col">
-        <div class="card h-100">
-          <div class="h-100">
-            <div id = "avg_velocity" class=" " role="alert">
-            </div>
-          </div>
-          <div class="card-body">
-            <h5 class="card-title">Average velocity</h5>
-            <p class="card-text">You could see how fast you have been over the Average:
-            </p>
-            <ul class="list-group">
-              <li class="list-group-item list-group-item-danger" >Your velocity is under the global average</li>
-              <li class="list-group-item list-group-item-warning">Your velocity is on the average</li>
-              <li class="list-group-item list-group-item-success">Your velocity is over the average</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
 
     <script src="./scripts/point.js"></script> 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-U1DAWAznBHeqEIlVSCgzq+c9gqGAJn5c/t99JyeKa9xxaYpSvHU5awsuZVVFIhvj" crossorigin="anonymous"></script>

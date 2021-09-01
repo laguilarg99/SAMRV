@@ -2,7 +2,7 @@
 //get the canvas, canvas context, and dpi
 let canvas = document.getElementById('myCanvas'),
     ctx = canvas.getContext('2d'),
-    dpi = window.devicePixelRatio;
+    dpi = 1.0;
 
 var bodyWidth =  document.getElementsByTagName("BODY")[0].offsetWidth;
 var bodyHeight = document.getElementsByTagName("BODY")[0].offsetHeight;
@@ -170,7 +170,7 @@ function initGame(error){
             sentData(data_end);
 
             document.getElementById('myCanvas').className = "opacityOut";
-            document.getElementById('gameBar').className = "opacityOut navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded";  
+            document.getElementById('gameBar').className = "opacityOut navbar navbar-custom position-absolute h-20 w-100";  
             
             setTimeout(function(){
                 document.getElementById('myCanvas').remove()
@@ -316,7 +316,7 @@ function initGame_Setup(){
          document.getElementById('data_error').remove(); 
          document.getElementById('myCanvas').style.display = 'block';
          initGame(error);
-         document.getElementById('gameBar').className = "opacityOn navbar navbar-custom position-absolute h-20 w-100 shadow p-3 mb-5 bg-white rounded";  
+         document.getElementById('gameBar').className = "opacityOn navbar navbar-custom position-absolute h-20 w-100";  
    }, 2000)
  
  }

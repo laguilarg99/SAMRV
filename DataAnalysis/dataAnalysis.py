@@ -4,6 +4,9 @@ import math
 import statistics as st
 import matplotlib.pyplot as plt
 from numpy.lib.function_base import angle
+from sklearn import linear_model
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 
 # Velocity -> Every value for velocity
 # timeTry -> Time needed for each try
@@ -124,7 +127,7 @@ def calculate_angles(posMouse1, posTarget1):
     endingTry = calculate_pos_ending(posTarget1)
     return get_angles(posMouse1, endingTry, beginingTry)
 
-files = glob.glob("data/*.txt")
+
 
 f = open("data/data1.txt", "r")
 velocity1, timeTry1, posTarget1, posMouse1 = read_data_from_file(f)
@@ -133,29 +136,49 @@ f.close()
 final_velocity = []
 
 for i in velocity1:
-    if(i > 200) & (i < 2500):
-        final_velocity.append(i)
+    final_velocity.append(i)
 
 final_velocity = np.array(final_velocity)
 
 angles = calculate_angles(posMouse1, posTarget1)
 
 
-
-
-x = range(0,final_velocity.size)
+x = np.array(range(0,final_velocity.size))
 y = final_velocity
+plt.plot(x,y,marker='.', markersize=1)
+plt.show()
 
-plt.plot(x, y, 'o')
+x = x.reshape(-1,1)
 
+
+data_train, data_test, target_train, target_test = train_test_split(x,y, test_size = 0.20, random_state = 10)
+
+knn = linear_model.LinearRegression()
+knn.fit(data_train, target_train)
+
+x = np.array(range(final_velocity.size+1,final_velocity.size*20))
+x = x.reshape(-1,1)
+pred1 = knn.predict(x)
+pred1 = np.array(pred1)
+
+x = np.array(range(0,(final_velocity.size*20)-1))
+y = np.concatenate((final_velocity, pred1), axis=None)
+
+plt.plot(x, y, alpha=0)
 m,b = np.polyfit(x, y, 1)
-
 plt.plot(x, m*x + b)
 plt.show()
 
 
 fig, ax = plt.subplots()
 ax.boxplot(angles)
+plt.show()
+
+x = np.array(range(0,timeTry1.size))
+y = timeTry1
+plt.plot(x, y)
+m,b = np.polyfit(x, y, 1)
+plt.plot(x, m*x + b)
 plt.show()
 
 print(st.mean(angles))

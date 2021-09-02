@@ -85,7 +85,7 @@ def calculate_init_try(i, posMouse1, posTarget1):
 def calculate_pos_begining(posMouse1, posTarget1):
     pos = 0
     accuracy = 1000
-
+    
     for i in range(20):
         beginingTry = calculate_init_try(i, posMouse1, posTarget1)
         if(abs(beginingTry.size - timeTry1.size) < accuracy):
@@ -108,17 +108,18 @@ def get_angles(posMouse1,endingTry, beginingTry):
     k = 0
     angles = []
     for i in endingTry:
-        a = posMouse1[beginingTry[k]]
-        b = posMouse1[beginingTry[k]+35]
-        c = i
-        
-        ba = a - b
-        bc = c - b
+        if(k < beginingTry.size):
+            a = posMouse1[beginingTry[k]]
+            b = posMouse1[beginingTry[k]+35]
+            c = i
+            
+            ba = a - b
+            bc = c - b
 
-        cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
-        angle = np.arccos(cosine_angle)
-        angles.append(math.degrees(angle))
-        k += 1
+            cosine_angle = np.dot(ba, bc) / (np.linalg.norm(ba) * np.linalg.norm(bc))
+            angle = np.arccos(cosine_angle)
+            angles.append(math.degrees(angle))
+            k += 1
 
     return np.array(angles)
 
@@ -128,61 +129,189 @@ def calculate_angles(posMouse1, posTarget1):
     return get_angles(posMouse1, endingTry, beginingTry)
 
 
+def return_final_velocity(velocity):
+    final_velocity = []
+
+    for i in velocity:
+        final_velocity.append(i)
+
+    final_velocity = np.array(final_velocity)
+    return final_velocity
+
+def predict_linear_regresion(final_velocity):
+    x = np.array(range(0,final_velocity.size))
+    y = final_velocity
+    plt.plot(x,y,marker='.', markersize=1)
+    plt.show()
+
+    x = x.reshape(-1,1)
+
+
+    data_train, data_test, target_train, target_test = train_test_split(x,y, random_state = 10)
+
+    linear = linear_model.LinearRegression()
+    linear.fit(data_train, target_train)
+
+    x = np.array(range(final_velocity.size+1,final_velocity.size*20))
+    x = x.reshape(-1,1)
+    pred1 = linear.predict(x)
+    pred1 = np.array(pred1)
+
+    x = np.array(range(0,(final_velocity.size*20)-1))
+    y = np.concatenate((final_velocity, pred1), axis=None)
+
+    dimension = 550000
+    x_final = []
+    y_final = []
+
+    for i in range(0, dimension):
+        if(i < x.size)&(i < y.size):
+            x_final.append(x[i])
+            y_final.append(y[i])
+    
+    x = np.array(x_final)
+    y = np.array(y_final)
+        
+    return x,y
+
+def calculate_time_data(timeTry):
+    x = np.array(range(0,timeTry.size))
+    y = timeTry
+
+    dimension = 150
+    x_final = []
+    y_final = []
+
+    for i in range(0, dimension):
+        if(i < x.size)&(i < y.size):
+            x_final.append(x[i])
+            y_final.append(y[i])
+    
+    x = np.array(x_final)
+    y = np.array(y_final)
+
+    return x,y
 
 f = open("data/data1.txt", "r")
 velocity1, timeTry1, posTarget1, posMouse1 = read_data_from_file(f)
 f.close()
 
-final_velocity = []
+f = open("data/data2.txt", "r")
+velocity2, timeTry2, posTarget2, posMouse2 = read_data_from_file(f)
+f.close()
 
-for i in velocity1:
-    final_velocity.append(i)
+f = open("data/data3.txt", "r")
+velocity3, timeTry3, posTarget3, posMouse3 = read_data_from_file(f)
+f.close()
 
-final_velocity = np.array(final_velocity)
+f = open("data/data4.txt", "r")
+velocity4, timeTry4, posTarget4, posMouse4 = read_data_from_file(f)
+f.close()
 
-angles = calculate_angles(posMouse1, posTarget1)
+f = open("data/data51.txt", "r")
+velocity51, timeTry51, posTarget51, posMouse51 = read_data_from_file(f)
+f.close()
+
+final_velocity1 = return_final_velocity(velocity1)
+final_velocity2 = return_final_velocity(velocity2)
+final_velocity3 = return_final_velocity(velocity3)
+final_velocity4 = return_final_velocity(velocity4)
+final_velocity51 = return_final_velocity(velocity51)
 
 
-x = np.array(range(0,final_velocity.size))
-y = final_velocity
-plt.plot(x,y,marker='.', markersize=1)
-plt.show()
+angles1 = calculate_angles(posMouse1, posTarget1)
+angles2 = calculate_angles(posMouse2, posTarget2)
+angles3 = calculate_angles(posMouse3, posTarget3)
+angles4 = calculate_angles(posMouse4, posTarget4)
+angles51 = calculate_angles(posMouse51, posTarget51)
 
-x = x.reshape(-1,1)
+x1,y1 = predict_linear_regresion(final_velocity1)
+x2,y2 = predict_linear_regresion(final_velocity2)
+x3,y3 = predict_linear_regresion(final_velocity3)
+x4,y4 = predict_linear_regresion(final_velocity4)
+x51,y51 = predict_linear_regresion(final_velocity51)
 
-
-data_train, data_test, target_train, target_test = train_test_split(x,y, test_size = 0.20, random_state = 10)
-
-knn = linear_model.LinearRegression()
-knn.fit(data_train, target_train)
-
-x = np.array(range(final_velocity.size+1,final_velocity.size*20))
-x = x.reshape(-1,1)
-pred1 = knn.predict(x)
-pred1 = np.array(pred1)
-
-x = np.array(range(0,(final_velocity.size*20)-1))
-y = np.concatenate((final_velocity, pred1), axis=None)
-
-plt.plot(x, y, alpha=0)
-m,b = np.polyfit(x, y, 1)
-plt.plot(x, m*x + b)
+plt.plot(x1, y1, alpha=0)
+plt.plot(x2, y2, alpha=0)
+plt.plot(x3, y3, alpha=0)
+plt.plot(x4, y4, alpha=0)
+plt.plot(x51, y51, alpha=0)
+m1,b1 = np.polyfit(x1, y1, 1)
+m2,b2 = np.polyfit(x2, y2, 1)
+m3,b3 = np.polyfit(x3, y3, 1)
+m4,b4 = np.polyfit(x4, y4, 1)
+m51,b51 = np.polyfit(x51, y51, 1)
+plt.plot(x1, m1*x1 + b1)
+plt.plot(x2, m2*x2 + b2)
+plt.plot(x3, m3*x3 + b3)
+plt.plot(x4, m4*x4 + b4)
+plt.plot(x51, m51*x51 + b51)
 plt.show()
 
 
 fig, ax = plt.subplots()
-ax.boxplot(angles)
+data_box_plot = {'1': angles1, '2': angles2, '3': angles3, '4': angles4, '5' : angles51}
+ax.boxplot(data_box_plot.values())
 plt.show()
 
-x = np.array(range(0,timeTry1.size))
-y = timeTry1
-plt.plot(x, y)
-m,b = np.polyfit(x, y, 1)
-plt.plot(x, m*x + b)
+x1,y1 = calculate_time_data(timeTry1)
+x2,y2 = calculate_time_data(timeTry2)
+x3,y3 = calculate_time_data(timeTry3)
+x4,y4 = calculate_time_data(timeTry4)
+x51,y51 = calculate_time_data(timeTry51)
+
+plt.plot(x1, y1, alpha=0)
+plt.plot(x2, y2, alpha=0)
+plt.plot(x3, y3, alpha=0)
+plt.plot(x4, y4, alpha=0)
+plt.plot(x51, y51, alpha=0)
+m1,b1 = np.polyfit(x1, y1, 1)
+m2,b2 = np.polyfit(x2, y2, 1)
+m3,b3 = np.polyfit(x3, y3, 1)
+m4,b4 = np.polyfit(x4, y4, 1)
+m51,b51 = np.polyfit(x51, y51, 1)
+plt.plot(x1, m1*x1 + b1)
+plt.plot(x2, m2*x2 + b2)
+plt.plot(x3, m3*x3 + b3)
+plt.plot(x4, m4*x4 + b4)
+plt.plot(x51, m51*x51 + b51)
 plt.show()
 
-print(st.mean(angles))
+
+print("Media angulos 1: ")
+print(st.mean(angles1))
+print("Media velocidad 1: ")
 print(st.mean(velocity1))
+print("Media tiempo 1: ")
 print(st.mean(timeTry1))
+
+print("Media angulos 2: ")
+print(st.mean(angles2))
+print("Media velocidad 2: ")
+print(st.mean(velocity2))
+print("Media tiempo 2: ")
+print(st.mean(timeTry2))
+
+print("Media angulos 3: ")
+print(st.mean(angles3))
+print("Media velocidad 3: ")
+print(st.mean(velocity3))
+print("Media tiempo 3: ")
+print(st.mean(timeTry3))
+
+
+print("Media angulos 4: ")
+print(st.mean(angles4))
+print("Media velocidad 4: ")
+print(st.mean(velocity4))
+print("Media tiempo 4: ")
+print(st.mean(timeTry4))
+
+print("Media angulos 51: ")
+print(st.mean(angles51))
+print("Media velocidad 51: ")
+print(st.mean(velocity51))
+print("Media tiempo 51: ")
+print(st.mean(timeTry51))
 
 

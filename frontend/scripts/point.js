@@ -323,7 +323,7 @@ function initGame_Setup(){
 
 
 function sentData(data){
-    var url = "http://ec2-18-215-129-32.compute-1.amazonaws.com:5000/processdata";
+    var url = "http://localhost:5000/processdata";
     var PostRequest = $.ajax({
         url: url,
         type: "POST",

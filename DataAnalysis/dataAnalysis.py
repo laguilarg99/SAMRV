@@ -212,11 +212,11 @@ f = open("data/data51.txt", "r")
 velocity51, timeTry51, posTarget51, posMouse51 = read_data_from_file(f)
 f.close()
 
-f = open("data/data2.txt", "r")
+f = open("data/data6.txt", "r")
 velocity6, timeTry6, posTarget6, posMouse6 = read_data_from_file(f)
 f.close()
 
-f = open("data/data3.txt", "r")
+f = open("data/data7.txt", "r")
 velocity7, timeTry7, posTarget7, posMouse7 = read_data_from_file(f)
 f.close()
 

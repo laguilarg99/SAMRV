@@ -138,10 +138,13 @@ def return_final_velocity(velocity):
     final_velocity = np.array(final_velocity)
     return final_velocity
 
-def predict_linear_regresion(final_velocity):
+def predict_linear_regresion(final_velocity,fig):
     x = np.array(range(0,final_velocity.size))
     y = final_velocity
     plt.plot(x,y,marker='.', markersize=1)
+    plt.title('Fig'+ str(fig) + '.Velocity values')
+    plt.ylabel('Velocity (px/s)')
+    plt.xlabel('Time (ms)')
     plt.show()
 
     x = x.reshape(-1,1)
@@ -236,14 +239,18 @@ angles51 = calculate_angles(posMouse51, posTarget51)
 angles6 = calculate_angles(posMouse6, posTarget6)
 angles7 = calculate_angles(posMouse7, posTarget7)
 
-x1,y1 = predict_linear_regresion(final_velocity1)
-x2,y2 = predict_linear_regresion(final_velocity2)
-x3,y3 = predict_linear_regresion(final_velocity3)
-x4,y4 = predict_linear_regresion(final_velocity4)
-x51,y51 = predict_linear_regresion(final_velocity51)
-x6,y6 = predict_linear_regresion(final_velocity6)
-x7,y7 = predict_linear_regresion(final_velocity7)
+x1,y1 = predict_linear_regresion(final_velocity1,1)
+x2,y2 = predict_linear_regresion(final_velocity2,2)
+x3,y3 = predict_linear_regresion(final_velocity3,3)
+x4,y4 = predict_linear_regresion(final_velocity4,4)
+x51,y51 = predict_linear_regresion(final_velocity51, 5)
+x6,y6 = predict_linear_regresion(final_velocity6, 6)
+x7,y7 = predict_linear_regresion(final_velocity7, 7)
 
+
+plt.title('Fig 8. Linear Regression for Velocity Values')
+plt.ylabel('Velocity (px/s)')
+plt.xlabel('Time (ms)')
 plt.plot(x1, y1, alpha=0)
 plt.plot(x2, y2, alpha=0)
 plt.plot(x3, y3, alpha=0)
@@ -261,6 +268,9 @@ plt.plot(x4, m4*x4 + b4)
 plt.plot(x51, m51*x51 + b51)
 plt.show()
 
+plt.title('Fig 9. Linear Regression for Velocity Values (Users 6 and 7)')
+plt.ylabel('Velocity (px/s)')
+plt.xlabel('Time (ms)')
 plt.plot(x6, y6, alpha=0)
 plt.plot(x7, y7, alpha=0)
 m6,b6 = np.polyfit(x6, y6, 1)
@@ -269,9 +279,13 @@ plt.plot(x6, m6*x6 + b6)
 plt.plot(x7, m7*x7 + b7)
 plt.show()
 
+
 fig, ax = plt.subplots()
 data_box_plot = {'1': angles1, '2': angles2, '3': angles3, '4': angles4, '5' : angles51, '6':angles6, '7': angles7}
 ax.boxplot(data_box_plot.values())
+plt.title('Fig 10. Boxplot of tje angles between the first displacement and the target')
+plt.ylabel('Angles (Degrees)')
+plt.xlabel('Users')
 plt.show()
 
 x1,y1 = calculate_time_data(timeTry1)
@@ -282,6 +296,10 @@ x51,y51 = calculate_time_data(timeTry51)
 x6,y6 = calculate_time_data(timeTry6)
 x7,y7 = calculate_time_data(timeTry7)
 
+
+plt.title('Fig 11. Linear Regression for Time Values')
+plt.ylabel('Time (ms)')
+plt.xlabel('Try')
 plt.plot(x1, y1, alpha=0)
 plt.plot(x2, y2, alpha=0)
 plt.plot(x3, y3, alpha=0)
@@ -299,6 +317,9 @@ plt.plot(x4, m4*x4 + b4)
 plt.plot(x51, m51*x51 + b51)
 plt.show()
 
+plt.title('Fig 12. Linear Regression for Time Values (Users 6 and 7)')
+plt.ylabel('Time (ms)')
+plt.xlabel('Try')
 plt.plot(x6, y6, alpha=0)
 plt.plot(x7, y7, alpha=0)
 m6,b6 = np.polyfit(x6, y6, 1)
